@@ -1,0 +1,298 @@
+﻿=== PAGE 1 ===
+13. Reporting & Analytics
+Flexible Report
+Builder
+DATA
+FILTERS
+COLUMNS
+GROUPING
+CHART
+EXPORT
+Reports
+Enquiry Source
+Performance
+Counsellor
+Performance
+Class-wise
+Enquiries
+Campus-wise
+Enquiries
+Follow-up
+Performance
+Overdue Tasks
+Walk-in
+Performance
+12. Management Dashboard
+Management
+Dashboard
+KPIs
+Total Enquiries ΓÇó
+New Enquiries
+Follow-ups Due ΓÇó
+Overdue Tasks
+Walk-ins
+Scheduled ΓÇó
+Walk-ins
+Completed
+Registrations ΓÇó
+Confirmed
+Admissions
+Conversion Rate
+ΓÇó Registration
+Fees Collected
+Admission Fees
+Collected
+Filters
+Date Range ΓÇó
+Academic Year ΓÇó
+Campus
+Class ΓÇó Lead
+Source ΓÇó
+Campaign ΓÇó
+Counsellor
+11. User Roles & Access
+Role-Based
+Access Control
+SUPER ADMIN
+Full access ΓÇó
+Users ΓÇó Roles ΓÇó
+Configuration
+Leads ΓÇó Reports
+ΓÇó Payments
+ADMISSION
+MANAGER
+All leads ΓÇó
+Assign /
+Reassign
+Counsellor
+monitoring ΓÇó
+Activities
+Follow-ups ΓÇó
+Admissions ΓÇó
+Reports
+ADMISSION
+COUNSELLOR
+Assigned
+enquiries ΓÇó
+Activities ΓÇó
+Tasks
+Follow-ups ΓÇó
+Walk-ins ΓÇó
+Admission
+information
+MANAGEMENT /
+PRINCIPAL
+Dashboard and
+read-only
+reports
+Performance ΓÇó
+Admissions ΓÇó
+Revenue
+10. Complete Enquiry Timeline
+Chronological
+Enquiry Timeline
+Enquiry Created
+Calls
+WhatsApp
+Follow-ups
+Walk-in
+Scheduled
+Walk-in Done
+Registration
+Registration Paid
+Admission
+Admission Fee
+Paid
+Admission
+Confirmed
+9. Document Management
+Required
+Admission
+Documents
+Document Status
+SUBMITTED
+PENDING
+VERIFIED
+Status and
+Remarks Linked
+to Student /
+Enquiry
+8. Admission Tracking
+Admission
+Decision
+Admission:
+CONFIRMED
+Admission:
+CANCELLED
+Admission Fee ΓÇó
+Amount Paid ΓÇó
+Balance Amount
+Payment Date ΓÇó
+Payment Mode
+Transaction
+Reference ΓÇó
+Receipt Number
+Admission Date
+Confirm
+Cancel
+7. Registration Tracking
+Registration
+Payment
+Registration:
+PAID
+Registration:
+REFUNDED
+Registration
+Amount ΓÇó
+Payment Date
+Payment Mode ΓÇó
+Transaction
+Reference
+Receipt Number
+Admission:
+PENDING
+Paid
+Refund required
+6. Walk-in Management
+Walk-in
+Management
+Visit Date ΓÇó
+Visitor Details ΓÇó
+Student
+Class ΓÇó
+Counsellor ΓÇó
+Outcome
+Remarks ΓÇó Next
+Action
+Walk-in Outcome
+5. Follow-up & Reminder Engine
+Follow-up Date ΓÇó
+Time ΓÇó Type
+Assigned User ΓÇó
+Reminder ΓÇó
+Notes
+Follow-up Views
+OVERDUE
+FOLLOW-UPS
+DUE TODAY
+UPCOMING
+FOLLOW-UPS
+4. Activity & Task Management
+Stage Actions
+Available
+Notes ΓÇó
+Activities ΓÇó
+Tasks ΓÇó Follow-
+ups
+Reminders ΓÇó
+Reassignment ΓÇó
+Information
+Updates
+Activity Timeline
+Linked to Enquiry
+Activities
+Phone Call ΓÇó
+WhatsApp ΓÇó
+Email ΓÇó Meeting
+Walk-in ΓÇó Follow-
+up ΓÇó Note
+Document
+Collection ΓÇó
+Payment Follow-
+up
+Admission
+Confirmation
+Capture Activity
+Type ΓÇó
+Date/Time ΓÇó User
+Outcome ΓÇó
+Remarks ΓÇó Next
+Action
+Create Next
+Follow-up?
+Create Follow-up
+Create Task
+Assigned User ΓÇó
+Priority ΓÇó Due
+Date/Time
+Description ΓÇó
+Status
+OPEN ΓåÆ IN
+PROGRESS
+Task Outcome
+COMPLETED
+CANCELLED
+Yes
+No
+Completed
+Cancelled
+3. Lead Status Lifecycle
+NEW
+Decision
+DNP
+Mandatory
+Reason
+Reason for DNP
+Fee ΓÇó Location ΓÇó
+Transport
+Chose Another
+School ΓÇó Not
+Interested
+No Response ΓÇó
+Admission
+Postponed
+Class
+Unavailable ΓÇó
+Other
+FOLLOW UP
+WALK-IN
+SCHEDULED
+WALK-IN DONE
+Next Action
+Registration:
+PENDING
+No response / Not proceeding
+Continue engagement
+Further engagement
+Proceed
+1. Lead / Enquiry Capture
+Enquiry Sources
+Website /
+Admission Form
+Google Ads
+Meta /
+Instagram /
+Facebook
+Phone Call
+WhatsApp
+Walk-in
+Parent Referral
+Staff Referral
+School Events /
+Open House
+Other Sources
+Create Lead /
+Enquiry Record
+Enquiry ID ΓÇó
+Enquiry Date ΓÇó
+Student Details
+Parent Contact ΓÇó
+Address ΓÇó
+Campus ΓÇó Class
+Academic Year ΓÇó
+Sibling
+Information
+Lead Source ΓÇó
+Campaign ΓÇó
+Counsellor ΓÇó
+Remarks
+Admission
+Enquiry Received
+Lead Assignment
+By user, role,
+campus, class or
+assignment rules
+Further follow-up
+Proceed to registration
+
+
