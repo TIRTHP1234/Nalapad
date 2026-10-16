@@ -1,12 +1,9 @@
 -- =====================================================
--- NALAPAD CRM — SUPABASE DATABASE SCHEMA
+-- NALAPAD CRM — SUPABASE DATABASE SCHEMA (IDEMPOTENT)
 -- Run this entire script in: Supabase → SQL Editor → New Query
 -- =====================================================
 
--- ── Enable UUID extension ──
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- ── PROFILES (extends Supabase auth.users) ──
+-- ── 1. PROFILES (extends Supabase auth.users) ──
 CREATE TABLE IF NOT EXISTS public.profiles (
   id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name     TEXT NOT NULL,
@@ -19,9 +16,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── ENQUIRIES (main lead table) ──
+-- ── 2. ENQUIRIES (main lead table) ──
 CREATE TABLE IF NOT EXISTS public.enquiries (
-  id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id          TEXT NOT NULL UNIQUE, -- ENQ-2025-0001
   enquiry_date        DATE NOT NULL DEFAULT CURRENT_DATE,
   -- Student
@@ -55,7 +52,7 @@ CREATE TABLE IF NOT EXISTS public.enquiries (
                                'WHATSAPP','WALK_IN','PARENT_REFERRAL','STAFF_REFERRAL',
                                'SCHOOL_EVENT','OTHER')),
   campaign            TEXT,
-  counsellor_id       UUID REFERENCES public.profiles(id),
+  counsellor_id       UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   -- Status
   status              TEXT NOT NULL DEFAULT 'NEW'
                         CHECK (status IN ('NEW','FOLLOW_UP','WALK_IN_SCHEDULED','WALK_IN_DONE',
@@ -64,14 +61,14 @@ CREATE TABLE IF NOT EXISTS public.enquiries (
   dnp_reason          TEXT,
   remarks             TEXT,
   -- Timestamps
-  created_by          UUID REFERENCES public.profiles(id),
+  created_by          UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── ACTIVITIES ──
+-- ── 3. ACTIVITIES ──
 CREATE TABLE IF NOT EXISTS public.activities (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id    UUID NOT NULL REFERENCES public.enquiries(id) ON DELETE CASCADE,
   type          TEXT NOT NULL
                   CHECK (type IN ('PHONE_CALL','WHATSAPP','EMAIL','MEETING','WALK_IN',
@@ -80,62 +77,62 @@ CREATE TABLE IF NOT EXISTS public.activities (
   outcome       TEXT NOT NULL,
   remarks       TEXT,
   next_action   TEXT,
-  performed_by  UUID REFERENCES public.profiles(id),
+  performed_by  UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   performed_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── TASKS ──
+-- ── 4. TASKS ──
 CREATE TABLE IF NOT EXISTS public.tasks (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id      UUID NOT NULL REFERENCES public.enquiries(id) ON DELETE CASCADE,
-  assigned_to     UUID REFERENCES public.profiles(id),
+  assigned_to     UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   priority        TEXT NOT NULL DEFAULT 'MEDIUM'
                     CHECK (priority IN ('HIGH','MEDIUM','LOW')),
   due_datetime    TIMESTAMPTZ NOT NULL,
   description     TEXT NOT NULL,
   status          TEXT NOT NULL DEFAULT 'OPEN'
                     CHECK (status IN ('OPEN','IN_PROGRESS','COMPLETED','CANCELLED')),
-  created_by      UUID REFERENCES public.profiles(id),
+  created_by      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── FOLLOW-UPS ──
+-- ── 5. FOLLOW-UPS ──
 CREATE TABLE IF NOT EXISTS public.follow_ups (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id      UUID NOT NULL REFERENCES public.enquiries(id) ON DELETE CASCADE,
   follow_up_date  DATE NOT NULL,
-  follow_up_time  TIME NOT NULL,
+  follow_up_time  TIME NOT NULL DEFAULT '10:00:00',
   type            TEXT NOT NULL CHECK (type IN ('CALL','WHATSAPP','EMAIL','VISIT')),
-  assigned_to     UUID REFERENCES public.profiles(id),
+  assigned_to     UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   reminder        BOOLEAN NOT NULL DEFAULT TRUE,
   notes           TEXT,
   completed       BOOLEAN NOT NULL DEFAULT FALSE,
   completed_at    TIMESTAMPTZ,
-  created_by      UUID REFERENCES public.profiles(id),
+  created_by      UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── WALK-INS ──
+-- ── 6. WALK-INS ──
 CREATE TABLE IF NOT EXISTS public.walk_ins (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id      UUID NOT NULL REFERENCES public.enquiries(id) ON DELETE CASCADE,
-  visit_date      TIMESTAMPTZ NOT NULL,
+  visit_date      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   visitor_name    TEXT NOT NULL,
-  counsellor_id   UUID REFERENCES public.profiles(id),
+  counsellor_id   UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   outcome         TEXT CHECK (outcome IN ('INTERESTED','NEEDS_FOLLOW_UP','NOT_INTERESTED','REGISTRATION')),
   remarks         TEXT,
   next_action     TEXT,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── REGISTRATIONS ──
+-- ── 7. REGISTRATIONS ──
 CREATE TABLE IF NOT EXISTS public.registrations (
-  id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id            UUID NOT NULL UNIQUE REFERENCES public.enquiries(id) ON DELETE CASCADE,
   amount                NUMERIC(10,2) NOT NULL,
-  payment_date          DATE NOT NULL,
+  payment_date          DATE NOT NULL DEFAULT CURRENT_DATE,
   payment_mode          TEXT NOT NULL CHECK (payment_mode IN ('CASH','CHEQUE','ONLINE','UPI','DD')),
   transaction_reference TEXT,
   receipt_number        TEXT NOT NULL,
@@ -143,11 +140,11 @@ CREATE TABLE IF NOT EXISTS public.registrations (
   created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── ADMISSIONS ──
+-- ── 8. ADMISSIONS ──
 CREATE TABLE IF NOT EXISTS public.admissions (
-  id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id            UUID NOT NULL UNIQUE REFERENCES public.enquiries(id) ON DELETE CASCADE,
-  admission_date        DATE,
+  admission_date        DATE DEFAULT CURRENT_DATE,
   fee_amount            NUMERIC(10,2),
   amount_paid           NUMERIC(10,2) DEFAULT 0,
   payment_date          DATE,
@@ -161,9 +158,9 @@ CREATE TABLE IF NOT EXISTS public.admissions (
   updated_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ── DOCUMENTS ──
+-- ── 9. DOCUMENTS ──
 CREATE TABLE IF NOT EXISTS public.documents (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enquiry_id    UUID NOT NULL REFERENCES public.enquiries(id) ON DELETE CASCADE,
   name          TEXT NOT NULL,
   status        TEXT NOT NULL DEFAULT 'PENDING'
@@ -171,7 +168,7 @@ CREATE TABLE IF NOT EXISTS public.documents (
   remarks       TEXT,
   file_url      TEXT,
   uploaded_at   TIMESTAMPTZ,
-  verified_by   UUID REFERENCES public.profiles(id),
+  verified_by   UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -190,7 +187,29 @@ ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admissions  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.documents   ENABLE ROW LEVEL SECURITY;
 
--- Allow authenticated users to read all data
+-- ── Drop existing policies if re-running ──
+DROP POLICY IF EXISTS "Authenticated users can read profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Authenticated users can read enquiries" ON public.enquiries;
+DROP POLICY IF EXISTS "Authenticated users can insert enquiries" ON public.enquiries;
+DROP POLICY IF EXISTS "Authenticated users can update enquiries" ON public.enquiries;
+DROP POLICY IF EXISTS "Authenticated users can read activities" ON public.activities;
+DROP POLICY IF EXISTS "Authenticated users can insert activities" ON public.activities;
+DROP POLICY IF EXISTS "Authenticated users can read tasks" ON public.tasks;
+DROP POLICY IF EXISTS "Authenticated users can insert tasks" ON public.tasks;
+DROP POLICY IF EXISTS "Authenticated users can update tasks" ON public.tasks;
+DROP POLICY IF EXISTS "Authenticated users can read follow_ups" ON public.follow_ups;
+DROP POLICY IF EXISTS "Authenticated users can insert follow_ups" ON public.follow_ups;
+DROP POLICY IF EXISTS "Authenticated users can update follow_ups" ON public.follow_ups;
+DROP POLICY IF EXISTS "Authenticated users can read walk_ins" ON public.walk_ins;
+DROP POLICY IF EXISTS "Authenticated users can insert walk_ins" ON public.walk_ins;
+DROP POLICY IF EXISTS "Authenticated users can read registrations" ON public.registrations;
+DROP POLICY IF EXISTS "Authenticated users can insert registrations" ON public.registrations;
+DROP POLICY IF EXISTS "Authenticated users can read admissions" ON public.admissions;
+DROP POLICY IF EXISTS "Authenticated users can manage admissions" ON public.admissions;
+DROP POLICY IF EXISTS "Authenticated users can read documents" ON public.documents;
+DROP POLICY IF EXISTS "Authenticated users can manage documents" ON public.documents;
+
+-- ── Create clean policies ──
 CREATE POLICY "Authenticated users can read profiles"
   ON public.profiles FOR SELECT TO authenticated USING (true);
 
@@ -254,50 +273,57 @@ CREATE POLICY "Authenticated users can manage documents"
 -- =====================================================
 -- TRIGGERS — auto-update updated_at
 -- =====================================================
-CREATE OR REPLACE FUNCTION update_updated_at()
+
+CREATE OR REPLACE FUNCTION public.update_updated_at()
 RETURNS TRIGGER AS $$
-BEGIN NEW.updated_at = NOW(); RETURN NEW; END;
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trg_enquiries_updated_at ON public.enquiries;
 CREATE TRIGGER trg_enquiries_updated_at
   BEFORE UPDATE ON public.enquiries
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
+DROP TRIGGER IF EXISTS trg_tasks_updated_at ON public.tasks;
 CREATE TRIGGER trg_tasks_updated_at
   BEFORE UPDATE ON public.tasks
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
+DROP TRIGGER IF EXISTS trg_admissions_updated_at ON public.admissions;
 CREATE TRIGGER trg_admissions_updated_at
   BEFORE UPDATE ON public.admissions
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
+DROP TRIGGER IF EXISTS trg_documents_updated_at ON public.documents;
 CREATE TRIGGER trg_documents_updated_at
   BEFORE UPDATE ON public.documents
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- =====================================================
--- FUNCTION — auto-create profile on signup
+-- FUNCTION & TRIGGER — auto-create profile on signup
 -- =====================================================
+
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, full_name, email, role)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email,'@',1)),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'role', 'ADMISSION_COUNSELLOR')
-  );
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    full_name = EXCLUDED.full_name,
+    email = EXCLUDED.email;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
-CREATE OR REPLACE TRIGGER on_auth_user_created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
--- =====================================================
--- SEED: Create initial admin user profile
--- (Run AFTER creating the admin user via Supabase Auth)
--- =====================================================
--- UPDATE public.profiles SET role = 'SUPER_ADMIN' WHERE email = 'admin@nalapad.edu';

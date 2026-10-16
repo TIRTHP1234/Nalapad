@@ -14,66 +14,67 @@ export default function Topbar({ title, subtitle, action }: TopbarProps) {
 
   return (
     <header
-      className="sticky top-0 z-30 flex items-center justify-between px-6 py-3.5"
+      className="sticky top-0 z-30 flex items-center justify-between px-7 py-4"
       style={{
         background: "var(--bg-card)",
         borderBottom: "1px solid var(--border)",
-        boxShadow: "0 1px 4px rgba(13,27,42,0.06)",
+        boxShadow: "0 1px 3px rgba(13,27,46,0.04)",
       }}
     >
-      {/* Left: Title */}
-      <div>
+      {/* Left: Title & Subtitle */}
+      <div className="min-w-0 pr-4">
         <h1
-          className="text-base font-bold"
-          style={{ color: "var(--text-primary)", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          className="text-lg font-bold truncate"
+          style={{ color: "var(--text-h)", fontFamily: "'Plus Jakarta Sans', sans-serif", letterSpacing: "-0.015em" }}
         >
           {title}
         </h1>
         {subtitle && (
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+          <p className="text-xs font-500 mt-0.5 truncate" style={{ color: "var(--text-sub)" }}>
             {subtitle}
           </p>
         )}
       </div>
 
-      {/* Right: Search + Bell + CTA */}
-      <div className="flex items-center gap-2.5">
-        {/* Search */}
+      {/* Right: Search + Bell + CTA Action */}
+      <div className="flex items-center gap-3 flex-shrink-0">
+        {/* Global Search */}
         <div className="relative hidden md:flex items-center">
-          <Search size={13} className="absolute left-3 pointer-events-none" style={{ color: "var(--text-muted)" }} />
+          <Search size={14} className="absolute left-3.5 pointer-events-none" style={{ color: "var(--text-muted)" }} />
           <input
             type="text"
-            placeholder="Search enquiries..."
+            placeholder="Search leads, parents..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="input-field pl-8 text-xs"
-            style={{ height: "34px", width: "210px" }}
+            className="input-field pl-9 text-xs"
+            style={{ height: "38px", width: "230px" }}
           />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-2.5">
-              <X size={12} style={{ color: "var(--text-muted)" }} />
+            <button onClick={() => setSearch("")} className="absolute right-3 p-0.5 text-gray-400 hover:text-gray-600">
+              <X size={13} />
             </button>
           )}
         </div>
 
-        {/* Notification bell */}
+        {/* Notification Bell */}
         <button
-          className="relative w-8 h-8 flex items-center justify-center rounded-lg transition-all"
-          style={{ background: "var(--bg-primary)", border: "1px solid var(--border)" }}
+          title="Notifications"
+          className="relative w-9 h-9 flex items-center justify-center rounded-xl transition-all hover:bg-gray-50 cursor-pointer"
+          style={{ background: "#FFFFFF", border: "1px solid var(--border)" }}
         >
-          <Bell size={14} style={{ color: "var(--text-secondary)" }} />
-          <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-500" />
+          <Bell size={16} style={{ color: "var(--text-sub)" }} />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white" />
         </button>
 
-        {/* Action CTA */}
+        {/* Action Button */}
         {action && (
           action.href ? (
-            <Link href={action.href} className="btn-primary" style={{ fontSize: "13px", padding: "7px 15px" }}>
-              <Plus size={14} /> {action.label}
+            <Link href={action.href} className="btn-primary" style={{ padding: "8.5px 16px", minHeight: "38px" }}>
+              <Plus size={15} /> {action.label}
             </Link>
           ) : (
-            <button onClick={action.onClick} className="btn-primary" style={{ fontSize: "13px", padding: "7px 15px" }}>
-              <Plus size={14} /> {action.label}
+            <button onClick={action.onClick} className="btn-primary" style={{ padding: "8.5px 16px", minHeight: "38px" }}>
+              <Plus size={15} /> {action.label}
             </button>
           )
         )}

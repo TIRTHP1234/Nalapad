@@ -18,8 +18,25 @@ const NAV = [
   { href: "/reports",    label: "Reports",     icon: BarChart3 },
 ];
 
-export default function Sidebar() {
+import { Suspense } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+
+function SidebarInner() {
   const path = usePathname();
+  const { user, signOut } = useAuth();
+
+  const initials = user?.fullName
+    ? user.fullName.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
+    : "ST";
+
+  const roleLabel =
+    user?.role === "SUPER_ADMIN"
+      ? "Super Admin"
+      : user?.role === "PRINCIPAL"
+      ? "Principal"
+      : user?.role === "ADMISSION_COUNSELLOR"
+      ? "Counsellor"
+      : "Staff";
   return (
     <aside
       className="fixed left-0 top-0 h-screen w-[224px] flex flex-col z-40"
@@ -65,21 +82,49 @@ export default function Sidebar() {
         <Link href="/settings" className={cn("sidebar-link mb-2", path === "/settings" && "active")}>
           <Settings size={17} /><span style={{ fontSize: 14 }}>Settings</span>
         </Link>
-        {/* User */}
-        <div className="flex items-center gap-3 px-3 py-3 rounded-xl mt-1"
-          style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.09)" }}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-700 text-white flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#3B82F6,#1A56DB)" }}>
-            SA
+        {/* User Profile */}
+        <div
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl mt-1"
+          style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.09)" }}
+        >
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+            style={{
+              background: user?.role === "SUPER_ADMIN"
+                ? "linear-gradient(135deg, #7C3AED, #4F46E5)"
+                : user?.role === "PRINCIPAL"
+                ? "linear-gradient(135deg, #D97706, #B45309)"
+                : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+            }}
+          >
+            {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1.3 }}>Super Admin</p>
-            <p style={{ fontSize: 10.5, color: "rgba(255,255,255,0.38)", marginTop: 1 }}>admin@nalapad.edu</p>
+            <p className="text-xs font-bold text-white truncate leading-tight">
+              {user?.fullName || "Staff Member"}
+            </p>
+            <p className="text-[10px] text-slate-300 font-semibold truncate leading-tight mt-0.5">
+              {roleLabel}
+            </p>
           </div>
-          <LogOut size={14} style={{ color: "rgba(255,255,255,0.32)", cursor: "pointer", flexShrink: 0 }}
-            className="hover:text-red-400 transition-colors" />
+          <button
+            type="button"
+            onClick={() => signOut()}
+            title="Sign out of CRM"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/10 transition-all cursor-pointer flex-shrink-0 border-0 bg-transparent"
+          >
+            <LogOut size={14} />
+          </button>
         </div>
       </div>
     </aside>
+  );
+}
+
+export default function Sidebar() {
+  return (
+    <Suspense fallback={<aside className="fixed left-0 top-0 h-screen w-[224px] z-40 bg-[#0E2148]" />}>
+      <SidebarInner />
+    </Suspense>
   );
 }

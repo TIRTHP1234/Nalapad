@@ -29,7 +29,8 @@ export async function updateSession(request: NextRequest) {
   // Protect CRM routes — redirect to login if not authenticated
   const { pathname } = request.nextUrl
   const isAuthRoute = pathname.startsWith('/login')
-  const isCRMRoute = !isAuthRoute && pathname !== '/'
+  const isApiRoute = pathname.startsWith('/api')
+  const isCRMRoute = !isAuthRoute && !isApiRoute && pathname !== '/'
 
   if (isCRMRoute && !user) {
     const url = request.nextUrl.clone()

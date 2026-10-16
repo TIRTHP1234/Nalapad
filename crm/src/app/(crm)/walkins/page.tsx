@@ -1,74 +1,332 @@
 "use client";
+import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
-import { Building2, Plus, CheckCircle2, Clock, XCircle } from "lucide-react";
-import { mockEnquiries } from "@/lib/mock-data";
-import { formatDate } from "@/lib/utils";
+import { Building2, Plus, CheckCircle2, Clock, Users, Loader2, Calendar, FileText } from "lucide-react";
+import { formatDateTime, formatDate } from "@/lib/utils";
 import Link from "next/link";
+import ScheduleWalkInModal from "@/components/ScheduleWalkInModal";
 
-const walkins = mockEnquiries.filter(e =>
-  e.status === "WALK_IN_SCHEDULED" || e.status === "WALK_IN_DONE"
-);
+interface WalkInRecord {
+  id: string;
+  enquiry_id: string;
+  visit_date: string;
+  visitor_name: string;
+  counsellor_id?: string;
+  outcome?: string;
+  remarks?: string;
+  next_action?: string;
+  enquiry?: {
+    id: string;
+    enquiry_id: string;
+    student_name: string;
+    primary_contact: string;
+    applying_class: string;
+    status: string;
+  };
+  counsellor?: {
+    id: string;
+    full_name: string;
+  };
+}
 
 export default function WalkInsPage() {
+  const [walkins, setWalkins] = useState<WalkInRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [outcomeTarget, setOutcomeTarget] = useState<WalkInRecord | null>(null);
+  const [outcomeVal, setOutcomeVal] = useState("INTERESTED");
+  const [outcomeRemarks, setOutcomeRemarks] = useState("");
+  const [savingOutcome, setSavingOutcome] = useState(false);
+
+  async function loadWalkIns() {
+    try {
+      const res = await fetch("/api/walkins");
+      const json = await res.json();
+      if (json.data && Array.isArray(json.data)) {
+        setWalkins(json.data);
+      }
+    } catch (err) {
+      console.error("Failed to load walk-in records:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadWalkIns();
+  }, []);
+
+  const handleSaveOutcome = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!outcomeTarget) return;
+
+    setSavingOutcome(true);
+    try {
+      const res = await fetch(`/api/walkins/${outcomeTarget.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          outcome: outcomeVal,
+          remarks: outcomeRemarks.trim() || undefined,
+        }),
+      });
+      if (res.ok) {
+        setOutcomeTarget(null);
+        setOutcomeRemarks("");
+        loadWalkIns();
+      }
+    } catch (err) {
+      console.error("Failed to update outcome:", err);
+    } finally {
+      setSavingOutcome(false);
+    }
+  };
+
+  const scheduled = walkins.filter(w => !w.outcome);
+  const completed = walkins.filter(w => Boolean(w.outcome));
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Topbar title="Walk-ins" subtitle="Manage school visit scheduling" action={{ label: "Schedule Walk-in", href: "#" }} />
-      <div className="flex-1 p-6 space-y-5 fade-in">
-        <div className="grid grid-cols-3 gap-4">
+    <div className="flex flex-col min-h-screen" style={{ background: "var(--bg-page)" }}>
+      <Topbar
+        title="Campus Walk-ins"
+        subtitle="Manage prospective parent school visits, campus tours & visit outcomes"
+        action={{ label: "New Enquiry", href: "/enquiries/new" }}
+      />
+      <div className="p-7 space-y-7 fade-in max-w-[1600px] mx-auto w-full">
+
+        {/* Action Header Banner */}
+        <div className="card flex items-center justify-between p-5 flex-wrap gap-4">
+          <div>
+            <h2 className="text-base font-bold text-[#0D1B2E]">Campus Tour Reception</h2>
+            <p className="text-xs text-slate-500 mt-0.5">Track and host physical campus visits from interested parents</p>
+          </div>
+          <button
+            onClick={() => setShowScheduleModal(true)}
+            className="btn-primary text-xs py-2 px-4 flex items-center gap-2"
+          >
+            <Plus size={16} /> Schedule Campus Walk-in
+          </button>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { label: "Scheduled", count: mockEnquiries.filter(e => e.status === "WALK_IN_SCHEDULED").length, color: "#8b5cf6", icon: Clock },
-            { label: "Completed", count: mockEnquiries.filter(e => e.status === "WALK_IN_DONE").length, color: "#10b981", icon: CheckCircle2 },
-            { label: "Total", count: walkins.length, color: "#6366f1", icon: Building2 },
-          ].map(({ label, count, color, icon: Icon }) => (
-            <div key={label} className="card text-center" style={{ padding: "20px" }}>
-              <Icon size={22} className="mx-auto mb-2" style={{ color }} />
-              <p className="text-2xl font-bold" style={{ color }}>{count}</p>
-              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{label}</p>
+            { label: "Scheduled Tours", count: scheduled.length, color: "#7C3AED", bg: "#F5F3FF", icon: Clock },
+            { label: "Completed Visits", count: completed.length, color: "#047857", bg: "#ECFDF5", icon: CheckCircle2 },
+            { label: "Total Visits Logged", count: walkins.length, color: "#1A56DB", bg: "#EBF1FF", icon: Building2 },
+          ].map(({ label, count, color, bg, icon: Icon }) => (
+            <div key={label} className="kpi-card" style={{ "--kpi-color": color } as React.CSSProperties}>
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ background: bg }}>
+                <Icon size={22} style={{ color }} />
+              </div>
+              <p className="text-3xl font-bold mb-1" style={{ color: "#0D1B2E", fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+                {count}
+              </p>
+              <p className="text-sm font-500" style={{ color: "var(--text-sub)" }}>{label}</p>
             </div>
           ))}
         </div>
 
+        {/* Records Table */}
         <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-          <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
-            <h3 className="text-sm font-semibold text-white">Walk-in Records</h3>
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
+            <div>
+              <h3 className="text-base font-bold" style={{ color: "var(--text-h)" }}>Campus Walk-in Log</h3>
+              <p className="text-sm mt-0.5" style={{ color: "var(--text-sub)" }}>Live visits recorded across school enquiries</p>
+            </div>
           </div>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Class</th>
-                <th>Counsellor</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {walkins.map(e => (
-                <tr key={e.id}>
-                  <td>
-                    <p className="font-semibold text-white text-sm">{e.studentName}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{e.primaryContact}</p>
-                  </td>
-                  <td>{e.applyingClass}</td>
-                  <td>{e.counsellorName}</td>
-                  <td>
-                    <span className="flex items-center gap-1.5 text-xs font-semibold"
-                      style={{ color: e.status === "WALK_IN_DONE" ? "#10b981" : "#8b5cf6" }}>
-                      {e.status === "WALK_IN_DONE" ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                      {e.status === "WALK_IN_DONE" ? "Completed" : "Scheduled"}
-                    </span>
-                  </td>
-                  <td>{formatDate(e.enquiryDate)}</td>
-                  <td>
-                    <Link href={`/enquiries/${e.id}`} className="text-xs" style={{ color: "#6366f1" }}>View →</Link>
-                  </td>
+
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-16" style={{ color: "var(--text-sub)" }}>
+              <Loader2 className="animate-spin mb-3" size={28} color="#1A56DB" />
+              <p className="text-sm font-semibold">Loading walk-ins...</p>
+            </div>
+          ) : walkins.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center" style={{ color: "var(--text-muted)" }}>
+              <Building2 size={40} style={{ opacity: 0.3, marginBottom: 12 }} />
+              <p className="text-base font-600" style={{ color: "var(--text-h)" }}>No campus walk-ins scheduled yet</p>
+              <p className="text-sm mt-1 mb-4" style={{ color: "var(--text-sub)" }}>
+                Schedule campus visits for interested parents and students.
+              </p>
+              <button
+                onClick={() => setShowScheduleModal(true)}
+                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+              >
+                <Plus size={14} /> Schedule First Walk-in
+              </button>
+            </div>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Visitor & Student</th>
+                  <th>Applying Grade</th>
+                  <th>Assigned Host</th>
+                  <th>Visit Status / Outcome</th>
+                  <th>Date & Time</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {walkins.map((w) => {
+                  const isDone = Boolean(w.outcome);
+                  return (
+                    <tr key={w.id}>
+                      <td>
+                        <p className="font-bold text-sm" style={{ color: "var(--text-h)" }}>{w.visitor_name}</p>
+                        <p className="text-xs mt-0.5 font-medium" style={{ color: "var(--text-muted)" }}>
+                          Student: {w.enquiry?.student_name} ({w.enquiry?.enquiry_id})
+                        </p>
+                        {w.remarks && (
+                          <p className="text-[11px] mt-1 text-slate-500 italic max-w-xs truncate">
+                            Note: {w.remarks}
+                          </p>
+                        )}
+                      </td>
+                      <td className="text-sm font-semibold">Grade {w.enquiry?.applying_class || "N/A"}</td>
+                      <td className="text-sm" style={{ color: "var(--text-body)" }}>
+                        {w.counsellor?.full_name || <span style={{ color: "var(--text-muted)" }}>Front Desk Host</span>}
+                      </td>
+                      <td>
+                        {isDone ? (
+                          <span
+                            className="chip"
+                            style={{
+                              background: "#ECFDF5",
+                              color: "#047857",
+                              borderColor: "#A7F3D0",
+                              fontSize: 11,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <CheckCircle2 size={12} /> {w.outcome?.replace(/_/g, " ")}
+                          </span>
+                        ) : (
+                          <span
+                            className="chip"
+                            style={{
+                              background: "#F5F3FF",
+                              color: "#7C3AED",
+                              borderColor: "#DDD6FE",
+                              fontSize: 11,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <Clock size={12} /> Tour Scheduled
+                          </span>
+                        )}
+                      </td>
+                      <td className="text-sm" style={{ color: "var(--text-sub)" }}>
+                        {formatDateTime(w.visit_date)}
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          {!isDone && (
+                            <button
+                              onClick={() => {
+                                setOutcomeTarget(w);
+                                setOutcomeVal("INTERESTED");
+                                setOutcomeRemarks("");
+                              }}
+                              className="btn-secondary text-[11px] py-1 px-2.5 text-purple-700 hover:bg-purple-50"
+                              style={{ minHeight: "30px" }}
+                            >
+                              Record Outcome
+                            </button>
+                          )}
+                          {w.enquiry && (
+                            <Link href={`/enquiries/${w.enquiry.id}`} className="text-xs font-semibold" style={{ color: "var(--blue-700)" }}>
+                              View Lead →
+                            </Link>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
+
+      {/* Schedule Modal */}
+      {showScheduleModal && (
+        <ScheduleWalkInModal
+          onClose={() => setShowScheduleModal(false)}
+          onSuccess={() => {
+            setShowScheduleModal(false);
+            loadWalkIns();
+          }}
+        />
+      )}
+
+      {/* Record Outcome Modal */}
+      {outcomeTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-[#D8E0EB]">
+            <div className="px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB] flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-base text-[#0D1B2E]">Record Visit Outcome</h3>
+                <p className="text-xs text-slate-500">{outcomeTarget.visitor_name}</p>
+              </div>
+              <button onClick={() => setOutcomeTarget(null)} className="text-slate-400 hover:text-slate-700">
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleSaveOutcome} className="p-6 space-y-4">
+              <div>
+                <span className="form-label">Family Decision / Outcome</span>
+                <select
+                  value={outcomeVal}
+                  onChange={(e) => setOutcomeVal(e.target.value)}
+                  className="input-field text-xs"
+                >
+                  <option value="INTERESTED">Interested in Admission</option>
+                  <option value="REGISTRATION">Proceeding to Registration Fee</option>
+                  <option value="NEEDS_FOLLOW_UP">Needs Follow-up Call</option>
+                  <option value="NOT_INTERESTED">Not Interested / Discontinued</option>
+                </select>
+              </div>
+
+              <div>
+                <span className="form-label">Tour Feedback & Observations</span>
+                <textarea
+                  value={outcomeRemarks}
+                  onChange={(e) => setOutcomeRemarks(e.target.value)}
+                  placeholder="e.g. Liked IB curriculum and football academy. Requested fee breakdown."
+                  rows={3}
+                  className="input-field text-xs resize-none"
+                  style={{ height: "auto" }}
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setOutcomeTarget(null)}
+                  disabled={savingOutcome}
+                  className="btn-secondary text-xs py-2 px-4"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingOutcome}
+                  className="btn-primary text-xs py-2 px-5 flex items-center gap-1.5"
+                >
+                  {savingOutcome ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                  Complete Visit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
