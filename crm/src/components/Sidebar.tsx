@@ -40,20 +40,20 @@ function SidebarInner() {
   return (
     <aside
       className="fixed left-0 top-0 h-screen w-[224px] flex flex-col z-40"
-      style={{ background: "#0E2148", borderRight: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "#1C1917", borderRight: "1px solid rgba(255,255,255,0.07)" }}
     >
       {/* Logo */}
-      <div className="px-5 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+      <div className="px-5 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.18)" }}>
-            <GraduationCap size={20} color="#fff" />
+            style={{ background: "rgba(249,115,22,0.22)", border: "1px solid rgba(249,115,22,0.35)" }}>
+            <GraduationCap size={20} color="#F97316" />
           </div>
           <div>
             <p style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: 15, color: "#fff", lineHeight: 1.2 }}>
               Nalapad
             </p>
-            <p style={{ fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.42)", marginTop: 2 }}>
+            <p style={{ fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.40)", marginTop: 2 }}>
               Admission CRM
             </p>
           </div>
@@ -78,23 +78,23 @@ function SidebarInner() {
       </nav>
 
       {/* Bottom */}
-      <div className="px-3 pb-5 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+      <div className="px-3 pb-5 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
         <Link href="/settings" className={cn("sidebar-link mb-2", path === "/settings" && "active")}>
           <Settings size={17} /><span style={{ fontSize: 14 }}>Settings</span>
         </Link>
         {/* User Profile */}
         <div
           className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl mt-1"
-          style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.09)" }}
+          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
         >
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
             style={{
               background: user?.role === "SUPER_ADMIN"
-                ? "linear-gradient(135deg, #7C3AED, #4F46E5)"
+                ? "linear-gradient(135deg, #F97316, #EA580C)"
                 : user?.role === "PRINCIPAL"
                 ? "linear-gradient(135deg, #D97706, #B45309)"
-                : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+                : "linear-gradient(135deg, #F97316, #C2410C)",
             }}
           >
             {initials}
@@ -123,7 +123,7 @@ function SidebarInner() {
 
 export default function Sidebar() {
   return (
-    <Suspense fallback={<aside className="fixed left-0 top-0 h-screen w-[224px] z-40 bg-[#0E2148]" />}>
+    <Suspense fallback={<aside className="fixed left-0 top-0 h-screen w-[224px] z-40" style={{ background: "#1C1917" }} />}>
       <SidebarInner />
     </Suspense>
   );

@@ -15,12 +15,12 @@ import {
 } from "recharts";
 
 const SOURCE_COLORS: Record<string, string> = {
-  WEBSITE: "#1A56DB",
+  WEBSITE: "#F97316",
   GOOGLE_ADS: "#0891B2",
   META_ADS: "#D97706",
   WALK_IN: "#047857",
   REFERRAL: "#7C3AED",
-  EDUCATION_FAIR: "#F97316",
+  EDUCATION_FAIR: "#EA580C",
   HOARDING: "#6B7280",
   NEWSPAPER: "#EC4899",
   OTHER: "#94A3B8",
@@ -98,10 +98,10 @@ export default function DashboardPage() {
 
   // Primary High-Level KPIs
   const primaryKpis = [
-    { label: "Total Enquiries",      value: stats.totalEnquiries,      icon: Users,         color: "#1A56DB", bg: "#EBF2FF", desc: "All recorded leads" },
-    { label: "New Enquiries",        value: stats.newEnquiries,        icon: TrendingUp,    color: "#0891B2", bg: "#ECFEFF", desc: "Pending initial contact" },
-    { label: "Follow-ups Due",       value: stats.todayFollowUps,      icon: CalendarCheck, color: "#D97706", bg: "#FFFBEB", desc: "Scheduled for today" },
-    { label: "Overdue Attention",    value: stats.overdueFollowUps,    icon: AlertTriangle, color: "#DC2626", bg: "#FEF2F2", desc: "Follow-ups missed SLA" },
+    { label: "Total Enquiries",   value: stats.totalEnquiries,   icon: Users,         color: "#F97316", bg: "#FFF7ED", desc: "All recorded leads" },
+    { label: "New Enquiries",     value: stats.newEnquiries,     icon: TrendingUp,    color: "#EA580C", bg: "#FFEDD5", desc: "Pending initial contact" },
+    { label: "Follow-ups Due",    value: stats.todayFollowUps,   icon: CalendarCheck, color: "#D97706", bg: "#FFFBEB", desc: "Scheduled for today" },
+    { label: "Overdue Attention", value: stats.overdueFollowUps, icon: AlertTriangle,  color: "#DC2626", bg: "#FEF2F2", desc: "Follow-ups missed SLA" },
   ];
 
   // Secondary Funnel & Revenue KPIs
@@ -236,9 +236,9 @@ export default function DashboardPage() {
                 <ResponsiveContainer width="100%" height={220}>
                   <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
-                      <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#1A56DB" stopOpacity={0.16} />
-                        <stop offset="95%" stopColor="#1A56DB" stopOpacity={0} />
+                      <linearGradient id="orangeGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#F97316" stopOpacity={0.18} />
+                        <stop offset="95%" stopColor="#F97316" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#047857" stopOpacity={0.16} />
@@ -249,13 +249,13 @@ export default function DashboardPage() {
                     <YAxis tick={{ fontSize: 12, fill: "#52667E" }} allowDecimals={false} />
                     <Tooltip content={<ChartTip />} />
                     <Area type="monotone" dataKey="enquiries" name="Enquiries"
-                      stroke="#1A56DB" strokeWidth={2.5} fill="url(#blueGrad)" />
+                      stroke="#F97316" strokeWidth={2.5} fill="url(#orangeGrad)" />
                     <Area type="monotone" dataKey="admissions" name="Admissions"
                       stroke="#047857" strokeWidth={2.5} fill="url(#greenGrad)" />
                   </AreaChart>
                 </ResponsiveContainer>
                 <div className="flex items-center gap-6 mt-4 pt-3" style={{ borderTop: "1px solid var(--border-light)" }}>
-                  {[{ c: "#1A56DB", l: "Enquiries" }, { c: "#047857", l: "Admissions" }].map(({ c, l }) => (
+                  {[{ c: "#F97316", l: "Enquiries" }, { c: "#047857", l: "Admissions" }].map(({ c, l }) => (
                     <div key={l} className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full" style={{ background: c }} />
                       <span className="text-xs font-600" style={{ color: "var(--text-sub)" }}>{l}</span>
@@ -323,7 +323,7 @@ export default function DashboardPage() {
                   <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#52667E" }} />
                   <YAxis tick={{ fontSize: 12, fill: "#52667E" }} allowDecimals={false} />
                   <Tooltip content={<ChartTip />} />
-                  <Bar dataKey="enquiries" name="Enquiries" fill="#1A56DB" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="enquiries" name="Enquiries" fill="#F97316" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="conversions" name="Conversions" fill="#047857" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                 <h3 className="text-base font-bold" style={{ color: "var(--text-h)" }}>Recent Admissions Enquiries</h3>
                 <p className="text-xs font-500 mt-0.5" style={{ color: "var(--text-sub)" }}>Latest candidates in admissions pipeline</p>
               </div>
-              <Link href="/enquiries" className="text-xs font-bold flex items-center gap-1 hover:underline" style={{ color: "var(--blue-700)" }}>
+              <Link href="/enquiries" className="text-xs font-bold flex items-center gap-1 hover:underline" style={{ color: "var(--orange)" }}>
                 View All Enquiries <ChevronRight size={14} />
               </Link>
             </div>
@@ -374,7 +374,7 @@ export default function DashboardPage() {
                         </td>
                         <td className="text-sm font-semibold">{e.applyingClass}</td>
                         <td className="text-sm">
-                          <span className="chip" style={{ background: "var(--blue-50)", color: "var(--blue-700)", borderColor: "#BFDBFE" }}>
+                          <span className="chip" style={{ background: "#FFF7ED", color: "#C2410C", borderColor: "#FED7AA" }}>
                             {e.leadSource.replace(/_/g, " ")}
                           </span>
                         </td>

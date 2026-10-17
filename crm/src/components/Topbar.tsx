@@ -16,9 +16,9 @@ export default function Topbar({ title, subtitle, action }: TopbarProps) {
     <header
       className="sticky top-0 z-30 flex items-center justify-between px-7 py-4"
       style={{
-        background: "var(--bg-card)",
+        background: "#FFFFFF",
         borderBottom: "1px solid var(--border)",
-        boxShadow: "0 1px 3px rgba(13,27,46,0.04)",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
       }}
     >
       {/* Left: Title & Subtitle */}
@@ -59,11 +59,13 @@ export default function Topbar({ title, subtitle, action }: TopbarProps) {
         {/* Notification Bell */}
         <button
           title="Notifications"
-          className="relative w-9 h-9 flex items-center justify-center rounded-xl transition-all hover:bg-gray-50 cursor-pointer"
+          className="relative w-9 h-9 flex items-center justify-center rounded-xl transition-all cursor-pointer"
           style={{ background: "#FFFFFF", border: "1px solid var(--border)" }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--orange)")}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
         >
           <Bell size={16} style={{ color: "var(--text-sub)" }} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-orange-500 ring-2 ring-white" />
         </button>
 
         {/* Action Button */}

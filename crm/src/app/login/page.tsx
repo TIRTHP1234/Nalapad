@@ -52,17 +52,17 @@ export default function LoginPage() {
         className="hidden lg:flex flex-col justify-between p-12"
         style={{
           flex: "0 0 440px",
-          background: "#0E2148",
-          borderRight: "1px solid rgba(255,255,255,0.06)",
+          background: "#1C1917",
+          borderRight: "1px solid rgba(255,255,255,0.07)",
         }}
       >
         {/* Logo */}
         <div className="flex items-center gap-3">
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.18)" }}
+            style={{ background: "rgba(249,115,22,0.22)", border: "1px solid rgba(249,115,22,0.35)" }}
           >
-            <GraduationCap size={22} color="#fff" />
+            <GraduationCap size={22} color="#F97316" />
           </div>
           <div>
             <p style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: 18, color: "#fff" }}>
@@ -102,8 +102,9 @@ export default function LoginPage() {
         <div style={{ width: "100%", maxWidth: 440 }}>
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "#0E2148" }}>
-              <GraduationCap size={20} color="#fff" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: "rgba(249,115,22,0.15)", border: "1.5px solid rgba(249,115,22,0.30)" }}>
+              <GraduationCap size={20} color="#F97316" />
             </div>
             <p style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 800, fontSize: 17, color: "var(--text-h)" }}>
               Nalapad CRM
@@ -127,22 +128,25 @@ export default function LoginPage() {
           </p>
 
           {/* Quick Staff Role Switcher */}
-          <div className="mb-6 p-4 rounded-xl border border-slate-200 bg-[#F8FAFD]">
-            <p className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <div className="mb-6 p-4 rounded-xl border bg-[#FFFBF7]" style={{ borderColor: "#FED7AA" }}>
+            <p className="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
-                <Sparkles size={13} className="text-blue-700" /> Quick Role Switcher
+                <Sparkles size={13} style={{ color: "#F97316" }} /> Quick Role Switcher
               </span>
-              <span className="text-[10px] text-blue-700 font-semibold lowercase">1-click login</span>
+              <span className="text-[10px] font-semibold lowercase" style={{ color: "#F97316" }}>1-click login</span>
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 disabled={loading}
                 onClick={() => handleQuickLogin("admin@nalapad.edu", "Password@123")}
-                className="text-left p-2.5 rounded-lg border border-slate-200 bg-white hover:border-purple-600 hover:bg-purple-50/40 transition-all text-xs cursor-pointer group"
+                className="text-left p-2.5 rounded-lg border bg-white transition-all text-xs cursor-pointer group"
+                style={{ borderColor: "#E5E7EB" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "#F97316"; e.currentTarget.style.background = "#FFF7ED"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FFFFFF"; }}
               >
-                <span className="font-bold text-slate-900 group-hover:text-purple-700 block">Super Admin</span>
-                <span className="text-[11px] text-slate-500">Tirth Patel</span>
+                <span className="font-bold text-stone-900 block" style={{ color: "var(--text-h)" }}>Super Admin</span>
+                <span className="text-[11px] text-stone-500">Tirth Patel</span>
               </button>
 
               <button
@@ -282,9 +286,10 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-8 p-4 rounded-xl text-center" style={{ background: "#EFF6FF", border: "1px solid #BFDBFE" }}>
-            <p style={{ fontSize: 12.5, color: "#1E40AF", fontWeight: 500 }}>
-              🔒 Access is strictly reserved for authorized Nalapad staff.
+          <div className="mt-8 p-4 rounded-xl text-center"
+            style={{ background: "#FFF7ED", border: "1px solid #FED7AA" }}>
+            <p style={{ fontSize: 12.5, color: "#92400E", fontWeight: 500 }}>
+              🔒 Access is strictly reserved for authorised Nalapad staff.
             </p>
           </div>
         </div>
