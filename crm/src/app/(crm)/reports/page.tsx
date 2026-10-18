@@ -7,7 +7,7 @@ import { Enquiry } from "@/lib/types";
 import {
   Download, BarChart3, Users, Loader2, Calendar, IndianRupee,
   TrendingUp, CheckCircle2, Clock, Filter, ArrowRight, FileText,
-  Layers, CreditCard, RotateCw, ChevronRight
+  Layers, CreditCard, RotateCw, ChevronRight, X
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -868,8 +868,8 @@ function ReportsContent() {
                 <h3 className="text-base font-bold text-slate-900">Export CRM Datasets (CSV)</h3>
                 <p className="text-xs text-slate-500 mt-0.5">Download live school records for auditing & analysis</p>
               </div>
-              <button onClick={() => setShowExportModal(false)} className="btn-secondary h-8 w-8 p-0 rounded-lg">
-                ✕
+              <button type="button" onClick={() => setShowExportModal(false)} className="modal-close-btn" aria-label="Close modal">
+                <X size={16} />
               </button>
             </div>
 

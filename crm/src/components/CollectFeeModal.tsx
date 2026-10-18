@@ -76,75 +76,77 @@ export default function CollectFeeModal({ enquiry, onClose, onSuccess }: Collect
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-[#D8E0EB]">
+    <div className="modal-overlay">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 animate-slide-up">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#EBF1FF] text-[#1A56DB] flex items-center justify-center">
+        <div className="flex items-center justify-between px-7 py-5 bg-slate-50/80 border-b border-slate-200/80">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shadow-xs">
               <CreditCard size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-[#0D1B2E]">Collect Fee & Issue Receipt</h3>
-              <p className="text-xs text-slate-500">{enquiry.studentName} ({enquiry.enquiryId})</p>
+              <h3 className="font-bold text-base text-slate-900 font-heading">Collect Fee & Issue Receipt</h3>
+              <p className="text-xs text-slate-500 mt-1">{enquiry.studentName} ({enquiry.enquiryId})</p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            className="modal-close-btn"
+            aria-label="Close"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-7 sm:p-8 space-y-6">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2">
-              <AlertCircle size={15} className="flex-shrink-0" />
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2.5">
+              <AlertCircle size={16} className="flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Fee Type Pill Selector */}
           <div>
-            <span className="form-label mb-2">Fee Head / Purpose</span>
-            <div className="grid grid-cols-2 gap-3">
+            <label className="form-label">Fee Head / Purpose</label>
+            <div className="grid grid-cols-2 gap-3.5">
               <button
                 type="button"
                 onClick={() => handleTypeChange("REGISTRATION")}
-                className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-left flex flex-col ${
+                className={`p-3.5 sm:p-4 rounded-xl border text-left transition-all ${
                   feeType === "REGISTRATION"
-                    ? "border-[#1A56DB] bg-[#EBF1FF] text-[#1A56DB] shadow-sm"
-                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    ? "border-orange-500 bg-orange-50/80 text-orange-950 ring-1 ring-orange-500/25 shadow-xs"
+                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
                 }`}
               >
-                <span>Registration Fee</span>
-                <span className="text-[11px] font-normal opacity-70">Secures admission slot</span>
+                <span className="block text-xs font-semibold text-slate-900">Registration Fee</span>
+                <span className="text-[11px] text-slate-500 block mt-1">Secures admission slot</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleTypeChange("ADMISSION")}
-                className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all text-left flex flex-col ${
+                className={`p-3.5 sm:p-4 rounded-xl border text-left transition-all ${
                   feeType === "ADMISSION"
-                    ? "border-[#047857] bg-[#ECFDF5] text-[#047857] shadow-sm"
-                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    ? "border-emerald-600 bg-emerald-50/80 text-emerald-950 ring-1 ring-emerald-600/25 shadow-xs"
+                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
                 }`}
               >
-                <span>Admission / Tuition Fee</span>
-                <span className="text-[11px] font-normal opacity-70">Confirms final enrollment</span>
+                <span className="block text-xs font-semibold text-slate-900">Admission / Tuition Fee</span>
+                <span className="text-[11px] text-slate-500 block mt-1">Confirms final enrollment</span>
               </button>
             </div>
           </div>
 
           {/* Amount */}
           <div>
-            <span className="form-label">
-              Amount (INR) <span className="text-red-500">*</span>
-            </span>
+            <label className="form-label">
+              Amount (INR) <span className="text-rose-500 font-normal ml-0.5">*</span>
+            </label>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
               <input
                 type="number"
                 required
@@ -159,11 +161,11 @@ export default function CollectFeeModal({ enquiry, onClose, onSuccess }: Collect
           </div>
 
           {/* Payment Mode & Reference */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
-              <span className="form-label">
-                Payment Mode <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Payment Mode <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <select
                 value={paymentMode}
                 onChange={(e) => setPaymentMode(e.target.value)}
@@ -178,14 +180,14 @@ export default function CollectFeeModal({ enquiry, onClose, onSuccess }: Collect
             </div>
 
             <div>
-              <span className="form-label">
-                Ref / UTR / Cheque # {paymentMode !== "CASH" && <span className="text-red-500">*</span>}
-              </span>
+              <label className="form-label">
+                Ref / UTR / Cheque # {paymentMode !== "CASH" && <span className="text-rose-500 font-normal ml-0.5">*</span>}
+              </label>
               <input
                 type="text"
                 value={transactionReference}
                 onChange={(e) => setTransactionReference(e.target.value)}
-                className="input-field font-mono text-xs"
+                className="input-field font-mono"
                 placeholder={paymentMode === "CASH" ? "Optional for cash" : "e.g., 425109283741"}
               />
             </div>
@@ -193,38 +195,38 @@ export default function CollectFeeModal({ enquiry, onClose, onSuccess }: Collect
 
           {/* Remarks */}
           <div>
-            <span className="form-label">Notes / Remarks</span>
+            <label className="form-label">Notes / Remarks</label>
             <input
               type="text"
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
-              className="input-field text-xs"
+              className="input-field"
               placeholder="e.g. Paid by father via Google Pay"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="btn-secondary text-xs py-2 px-4"
+              className="btn-secondary px-5"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary text-xs py-2 px-5 flex items-center gap-2"
+              className="btn-primary px-6"
             >
               {loading ? (
                 <>
-                  <Loader2 size={15} className="animate-spin" /> Processing Payment...
+                  <Loader2 size={16} className="animate-spin" /> Processing Payment...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={15} /> Confirm & Generate Receipt
+                  <CheckCircle2 size={16} /> Confirm & Generate Receipt
                 </>
               )}
             </button>

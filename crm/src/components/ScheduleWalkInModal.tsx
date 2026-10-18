@@ -101,41 +101,45 @@ export default function ScheduleWalkInModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-[#D8E0EB]">
+    <div className="modal-overlay">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 animate-slide-up">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F5F3FF] text-[#7C3AED] flex items-center justify-center">
+        <div className="flex items-center justify-between px-7 py-5 bg-slate-50/80 border-b border-slate-200/80">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shadow-xs">
               <Building2 size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-[#0D1B2E]">Schedule Campus Walk-in</h3>
-              <p className="text-xs text-slate-500">Record a family school visit and tour</p>
+              <h3 className="font-bold text-base text-slate-900 font-heading">Schedule Campus Walk-in</h3>
+              <p className="text-xs text-slate-500 mt-1">Record a family school visit and campus tour</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
-            <X size={18} />
+          <button 
+            type="button" 
+            onClick={onClose} 
+            className="modal-close-btn"
+            aria-label="Close"
+          >
+            <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-7 sm:p-8 space-y-6">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2">
-              <AlertCircle size={15} className="flex-shrink-0" />
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2.5">
+              <AlertCircle size={16} className="flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Select Enquiry if not initial */}
-          {/* Select Enquiry if not initial */}
           {!initialEnquiry ? (
             <div>
-              <span className="form-label">
-                Select Student Enquiry <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Select Student Enquiry <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <select
                 value={selectedEnquiryId}
                 onChange={(e) => {
@@ -154,45 +158,45 @@ export default function ScheduleWalkInModal({
               </select>
             </div>
           ) : (
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-              <span className="text-slate-500 block">Lead:</span>
-              <span className="font-bold text-slate-900">{initialEnquiry.studentName} ({initialEnquiry.enquiryId})</span>
+            <div className="p-3.5 rounded-xl bg-slate-50/90 border border-slate-200 text-xs">
+              <span className="text-slate-500 block text-[11px] uppercase tracking-wider font-semibold">Student Lead</span>
+              <span className="font-semibold text-slate-900 mt-1 block text-sm">{initialEnquiry.studentName} ({initialEnquiry.enquiryId})</span>
             </div>
           )}
 
           {/* Visitor Name & Datetime */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
-              <span className="form-label">
-                Visitor Name(s) <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Visitor Name(s) <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <input
                 type="text"
                 required
                 value={visitorName}
                 onChange={(e) => setVisitorName(e.target.value)}
                 placeholder="e.g. Mr. & Mrs. Sharma"
-                className="input-field text-xs"
+                className="input-field"
               />
             </div>
 
             <div>
-              <span className="form-label">
-                Visit Date & Time <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Visit Date & Time <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <input
                 type="datetime-local"
                 required
                 value={visitDate}
                 onChange={(e) => setVisitDate(e.target.value)}
-                className="input-field text-xs"
+                className="input-field"
               />
             </div>
           </div>
 
           {/* Assigned Counsellor */}
           <div>
-            <span className="form-label">Host / Assigned Counsellor</span>
+            <label className="form-label">Host / Assigned Counsellor</label>
             <select
               value={counsellorId}
               onChange={(e) => setCounsellorId(e.target.value)}
@@ -206,65 +210,66 @@ export default function ScheduleWalkInModal({
           </div>
 
           {/* Visit State: Scheduled vs Completed */}
-          <div className="pt-2">
-            <div
-              className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 select-none"
-              onClick={() => setIsCompleted(!isCompleted)}
-            >
+          <div>
+            <label className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 checked={isCompleted}
                 onChange={(e) => setIsCompleted(e.target.checked)}
-                onClick={(e) => e.stopPropagation()}
-                className="rounded border-slate-300 text-[#1A56DB] focus:ring-0 w-4 h-4 cursor-pointer"
+                className="w-4 h-4 rounded text-orange-600 border-slate-300 focus:ring-orange-500/20 cursor-pointer"
               />
-              <span className="cursor-pointer select-none">This visit has already taken place (Record outcome now)</span>
-            </div>
+              <div>
+                <span className="text-xs font-semibold text-slate-800 block">
+                  This visit has already taken place
+                </span>
+                <span className="text-[11px] text-slate-500 block mt-0.5">
+                  Record outcome, family interest level, and tour observations now
+                </span>
+              </div>
+            </label>
           </div>
 
           {isCompleted && (
-            <div className="p-3.5 bg-purple-50 rounded-xl border border-purple-100 space-y-3">
-              <div>
-                <span className="form-label text-purple-900">Visit Outcome</span>
-                <select
-                  value={outcome}
-                  onChange={(e) => setOutcome(e.target.value)}
-                  className="input-field text-xs bg-white"
-                >
-                  <option value="INTERESTED">Interested in Admission</option>
-                  <option value="REGISTRATION">Proceeded to Registration Form</option>
-                  <option value="NEEDS_FOLLOW_UP">Needs Follow-up Call</option>
-                  <option value="NOT_INTERESTED">Not Interested / Chose Another School</option>
-                </select>
-              </div>
+            <div className="p-4 bg-orange-50/60 rounded-xl border border-orange-100 space-y-3 animate-fade-in">
+              <label className="form-label text-orange-950 font-semibold">Visit Outcome</label>
+              <select
+                value={outcome}
+                onChange={(e) => setOutcome(e.target.value)}
+                className="input-field bg-white"
+              >
+                <option value="INTERESTED">Interested in Admission</option>
+                <option value="REGISTRATION">Proceeded to Registration Form</option>
+                <option value="NEEDS_FOLLOW_UP">Needs Follow-up Call</option>
+                <option value="NOT_INTERESTED">Not Interested / Chose Another School</option>
+              </select>
             </div>
           )}
 
           {/* Remarks */}
           <div>
-            <span className="form-label">Tour Notes / Comments</span>
+            <label className="form-label">Tour Notes / Comments</label>
             <input
               type="text"
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
               placeholder="e.g. Visited science labs and sports complex. Parent impressed."
-              className="input-field text-xs"
+              className="input-field"
             />
           </div>
 
           {/* Footer buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-            <button type="button" onClick={onClose} disabled={loading} className="btn-secondary text-xs py-2 px-4">
+          <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
+            <button type="button" onClick={onClose} disabled={loading} className="btn-secondary px-5">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary text-xs py-2 px-5 flex items-center gap-2">
+            <button type="submit" disabled={loading} className="btn-primary px-6">
               {loading ? (
                 <>
-                  <Loader2 size={15} className="animate-spin" /> Scheduling...
+                  <Loader2 size={16} className="animate-spin" /> Scheduling...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={15} /> Save Walk-in
+                  <CheckCircle2 size={16} /> Save Walk-in
                 </>
               )}
             </button>

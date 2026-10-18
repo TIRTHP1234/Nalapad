@@ -51,28 +51,30 @@ export default function ReceiptModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in print:p-0 print:bg-white">
+    <div className="modal-overlay print:p-0 print:bg-white">
       {/* Container */}
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[95vh] border border-[#D8E0EB] print:shadow-none print:border-none print:max-w-none print:w-full print:rounded-none">
+      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[95vh] border border-slate-200 animate-slide-up print:shadow-none print:border-none print:max-w-none print:w-full print:rounded-none">
         
         {/* Modal Top Actions (Hidden on Print) */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB] print:hidden">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="text-emerald-600" size={20} />
-            <span className="font-bold text-sm text-[#0D1B2E]">Payment Successful — Official Receipt</span>
+        <div className="flex items-center justify-between px-6 py-4 bg-slate-50/80 border-b border-slate-200/80 print:hidden">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle className="text-emerald-600" size={19} />
+            <span className="font-bold text-sm text-slate-900 font-heading">Payment Verified — Official Nalapad Receipt</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={handlePrint}
               className="btn-primary text-xs py-2 px-3.5 flex items-center gap-2"
             >
-              <Printer size={15} /> Print / Save PDF
+              <Printer size={14} /> Print / Save PDF
             </button>
             <button
+              type="button"
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              className="modal-close-btn"
+              aria-label="Close"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           </div>
         </div>

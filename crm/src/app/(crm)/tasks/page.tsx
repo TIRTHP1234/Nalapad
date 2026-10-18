@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
 import { formatDateTime } from "@/lib/utils";
-import { CheckCircle2, Clock, AlertCircle, X, ClipboardList, Calendar, Loader2, Plus } from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle, X, ClipboardList, Calendar, Loader2, Plus, User } from "lucide-react";
 import Link from "next/link";
 import CreateTaskModal from "@/components/CreateTaskModal";
 
@@ -151,8 +151,8 @@ export default function TasksPage() {
                               <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                                 <Calendar size={11} className="inline mr-1" />{t.due_datetime ? formatDateTime(t.due_datetime) : "No due date"}
                               </span>
-                              <span className="text-xs" style={{ color: "var(--text-sub)" }}>
-                                👤 {t.assigned_user?.full_name || "Unassigned"}
+                              <span className="text-xs inline-flex items-center gap-1" style={{ color: "var(--text-sub)" }}>
+                                <User size={12} className="text-slate-400" /> {t.assigned_user?.full_name || "Unassigned"}
                               </span>
                               {t.enquiry && (
                                 <Link href={`/enquiries/${t.enquiry.id}`} className="text-xs font-semibold" style={{ color: "var(--blue-700)" }}>

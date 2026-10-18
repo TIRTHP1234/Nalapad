@@ -89,7 +89,13 @@ const FollowUpCard = ({
                 fontSize: 11,
               }}
             >
-              {tag === "OVERDUE" ? "⚠ Overdue" : tag === "TODAY" ? "📅 Due Today" : "🔜 Upcoming"}
+              {tag === "OVERDUE" ? (
+                <span className="inline-flex items-center gap-1"><AlertTriangle size={11} /> Overdue</span>
+              ) : tag === "TODAY" ? (
+                <span className="inline-flex items-center gap-1"><Calendar size={11} /> Due Today</span>
+              ) : (
+                <span className="inline-flex items-center gap-1"><Clock size={11} /> Upcoming</span>
+              )}
             </span>
           )}
         </div>

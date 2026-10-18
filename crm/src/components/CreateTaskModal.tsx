@@ -97,30 +97,35 @@ export default function CreateTaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-[#D8E0EB]">
+    <div className="modal-overlay">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 animate-slide-up">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#EBF1FF] text-[#1A56DB] flex items-center justify-center">
+        <div className="flex items-center justify-between px-7 py-5 bg-slate-50/80 border-b border-slate-200/80">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shadow-xs">
               <ClipboardList size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-[#0D1B2E]">Create New Task</h3>
-              <p className="text-xs text-slate-500">Assign action item to counsellor or staff</p>
+              <h3 className="font-bold text-base text-slate-900 font-heading">Create New Task</h3>
+              <p className="text-xs text-slate-500 mt-1">Assign action item to counsellor or admissions staff</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
-            <X size={18} />
+          <button 
+            type="button" 
+            onClick={onClose} 
+            className="modal-close-btn"
+            aria-label="Close"
+          >
+            <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-7 sm:p-8 space-y-6">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2">
-              <AlertCircle size={15} className="flex-shrink-0" />
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2.5">
+              <AlertCircle size={16} className="flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -128,13 +133,13 @@ export default function CreateTaskModal({
           {/* Select Enquiry if not preselected */}
           {!initialEnquiry ? (
             <div>
-              <span className="form-label">
-                Related Enquiry <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Related Enquiry <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <select
                 value={selectedEnquiryId}
                 onChange={(e) => setSelectedEnquiryId(e.target.value)}
-                className="input-field text-xs"
+                className="input-field"
                 required
               >
                 {enquiries.map((e) => (
@@ -145,63 +150,63 @@ export default function CreateTaskModal({
               </select>
             </div>
           ) : (
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-              <span className="text-slate-500 block">Related Enquiry:</span>
-              <span className="font-bold text-slate-900">{initialEnquiry.studentName} ({initialEnquiry.enquiryId})</span>
+            <div className="p-3.5 rounded-xl bg-slate-50/90 border border-slate-200 text-xs">
+              <span className="text-slate-500 block text-[11px] uppercase tracking-wider font-semibold">Related Enquiry</span>
+              <span className="font-semibold text-slate-900 mt-1 block text-sm">{initialEnquiry.studentName} ({initialEnquiry.enquiryId})</span>
             </div>
           )}
 
           {/* Task Description */}
           <div>
-            <span className="form-label">
-              Task Description <span className="text-red-500">*</span>
-            </span>
+            <label className="form-label">
+              Task Description <span className="text-rose-500 font-normal ml-0.5">*</span>
+            </label>
             <input
               type="text"
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g., Collect Transfer Certificate from parent"
-              className="input-field text-xs"
+              placeholder="e.g., Collect Transfer Certificate and medical dossier from parent"
+              className="input-field"
             />
           </div>
 
           {/* Priority & Due Date */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
-              <span className="form-label">Priority</span>
+              <label className="form-label">Priority</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as any)}
-                className="input-field text-xs font-semibold"
+                className="input-field font-medium"
               >
                 <option value="HIGH">High Priority (Urgent)</option>
                 <option value="MEDIUM">Medium Priority (Standard)</option>
-                <option value="LOW">Low Priority</option>
+                <option value="LOW">Low Priority (Routine)</option>
               </select>
             </div>
 
             <div>
-              <span className="form-label">
-                Due Date & Time <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Due Date & Time <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <input
                 type="datetime-local"
                 required
                 value={dueDatetime}
                 onChange={(e) => setDueDatetime(e.target.value)}
-                className="input-field text-xs"
+                className="input-field"
               />
             </div>
           </div>
 
           {/* Assignee */}
           <div>
-            <span className="form-label">Assignee</span>
+            <label className="form-label">Assignee</label>
             <select
               value={assignedTo}
               onChange={(e) => setAssignedTo(e.target.value)}
-              className="input-field text-xs"
+              className="input-field"
             >
               <option value="">Unassigned</option>
               {counsellors.map((c) => (
@@ -211,18 +216,18 @@ export default function CreateTaskModal({
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-            <button type="button" onClick={onClose} disabled={loading} className="btn-secondary text-xs py-2 px-4">
+          <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
+            <button type="button" onClick={onClose} disabled={loading} className="btn-secondary px-5">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary text-xs py-2 px-5 flex items-center gap-2">
+            <button type="submit" disabled={loading} className="btn-primary px-6">
               {loading ? (
                 <>
-                  <Loader2 size={15} className="animate-spin" /> Creating...
+                  <Loader2 size={16} className="animate-spin" /> Creating...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={15} /> Create Task
+                  <CheckCircle2 size={16} /> Create Task
                 </>
               )}
             </button>

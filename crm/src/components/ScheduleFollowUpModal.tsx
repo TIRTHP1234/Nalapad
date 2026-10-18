@@ -120,45 +120,49 @@ export default function ScheduleFollowUpModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-[#D8E0EB]">
+    <div className="modal-overlay">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 animate-slide-up">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#EBF1FF] text-[#1A56DB] flex items-center justify-center">
+        <div className="flex items-center justify-between px-7 py-5 bg-slate-50/80 border-b border-slate-200/80">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shadow-xs">
               <Calendar size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-[#0D1B2E]">
+              <h3 className="font-bold text-base text-slate-900 font-heading">
                 {isReschedule ? "Reschedule Follow-up" : "Schedule Follow-up"}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 mt-1">
                 {isReschedule ? "Update the call date and time" : "Set automated reminder for admission enquiry"}
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
-            <X size={18} />
+          <button 
+            type="button" 
+            onClick={onClose} 
+            className="modal-close-btn"
+            aria-label="Close"
+          >
+            <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-7 sm:p-8 space-y-6">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2">
-              <AlertCircle size={15} className="flex-shrink-0" />
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2.5">
+              <AlertCircle size={16} className="flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Select Enquiry if creating new */}
-          {/* Select Enquiry if creating new */}
           {!isReschedule && !initialEnquiry && (
             <div>
-              <span className="form-label">
-                Select Student Enquiry <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Select Student Enquiry <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <select
                 value={selectedEnquiryId}
                 onChange={(e) => setSelectedEnquiryId(e.target.value)}
@@ -175,16 +179,16 @@ export default function ScheduleFollowUpModal({
           )}
 
           {initialEnquiry && (
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-              <span className="text-slate-500 block">Student Lead:</span>
-              <span className="font-bold text-slate-900">{initialEnquiry.studentName} ({initialEnquiry.enquiryId})</span>
+            <div className="p-3.5 rounded-xl bg-slate-50/90 border border-slate-200 text-xs">
+              <span className="text-slate-500 block text-[11px] uppercase tracking-wider font-semibold">Student Lead</span>
+              <span className="font-semibold text-slate-900 mt-1 block text-sm">{initialEnquiry.studentName} ({initialEnquiry.enquiryId})</span>
             </div>
           )}
 
           {/* Communication Channel */}
           <div>
-            <span className="form-label">Interaction Type</span>
-            <div className="grid grid-cols-4 gap-2">
+            <label className="form-label">Interaction Type</label>
+            <div className="grid grid-cols-4 gap-3">
               {[
                 { id: "CALL", label: "Phone", icon: Phone },
                 { id: "WHATSAPP", label: "WhatsApp", icon: MessageCircle },
@@ -198,14 +202,10 @@ export default function ScheduleFollowUpModal({
                     key={c.id}
                     type="button"
                     onClick={() => setType(c.id)}
-                    className={`py-2 px-2 rounded-xl border text-xs font-bold flex flex-col items-center gap-1 transition-all ${
-                      active
-                        ? "border-[#1A56DB] bg-[#EBF1FF] text-[#1A56DB]"
-                        : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                    }`}
+                    className={`pill-btn flex-col sm:flex-row py-3 px-3 text-xs w-full gap-2 rounded-xl ${active ? "active" : ""}`}
                   >
-                    <Icon size={14} />
-                    <span>{c.label}</span>
+                    <Icon size={15} className={active ? "text-orange-600" : "text-slate-400"} />
+                    <span className="font-medium">{c.label}</span>
                   </button>
                 );
               })}
@@ -213,26 +213,26 @@ export default function ScheduleFollowUpModal({
           </div>
 
           {/* Date & Time */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-5">
             <div>
-              <span className="form-label">
-                Follow-up Date <span className="text-red-500">*</span>
-              </span>
+              <label className="form-label">
+                Follow-up Date <span className="text-rose-500 font-normal ml-0.5">*</span>
+              </label>
               <input
                 type="date"
                 required
                 value={followUpDate}
                 onChange={(e) => setFollowUpDate(e.target.value)}
-                className="input-field text-xs"
+                className="input-field"
               />
             </div>
             <div>
-              <span className="form-label">Time</span>
+              <label className="form-label">Time</label>
               <input
                 type="time"
                 value={followUpTime}
                 onChange={(e) => setFollowUpTime(e.target.value)}
-                className="input-field text-xs"
+                className="input-field"
               />
             </div>
           </div>
@@ -240,11 +240,11 @@ export default function ScheduleFollowUpModal({
           {/* Assigned Counsellor */}
           {!isReschedule && (
             <div>
-              <span className="form-label">Assign To</span>
+              <label className="form-label">Assign To</label>
               <select
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                className="input-field text-xs"
+                className="input-field"
               >
                 <option value="">Unassigned</option>
                 {counsellors.map((c) => (
@@ -256,29 +256,29 @@ export default function ScheduleFollowUpModal({
 
           {/* Notes / Agenda */}
           <div>
-            <span className="form-label">Notes / Agenda</span>
+            <label className="form-label">Notes / Agenda</label>
             <input
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Call father regarding bus route and fee structure"
-              className="input-field text-xs"
+              className="input-field"
             />
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-            <button type="button" onClick={onClose} disabled={loading} className="btn-secondary text-xs py-2 px-4">
+          <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
+            <button type="button" onClick={onClose} disabled={loading} className="btn-secondary px-5">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary text-xs py-2 px-5 flex items-center gap-2">
+            <button type="submit" disabled={loading} className="btn-primary px-6">
               {loading ? (
                 <>
-                  <Loader2 size={15} className="animate-spin" /> Saving...
+                  <Loader2 size={16} className="animate-spin" /> Saving...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={15} /> {isReschedule ? "Update Schedule" : "Confirm Schedule"}
+                  <CheckCircle2 size={16} /> {isReschedule ? "Update Schedule" : "Confirm Schedule"}
                 </>
               )}
             </button>

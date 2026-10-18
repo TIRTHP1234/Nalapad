@@ -863,8 +863,8 @@ function EnquiryDetailContent() {
                                   <Calendar size={11} className="inline mr-1" />
                                   {formatDateTime(t.dueDateTime)}
                                 </span>
-                                <span style={{ color: "var(--text-muted)" }}>
-                                  👤 {t.assignedUserName || "Staff"}
+                                <span style={{ color: "var(--text-muted)" }} className="inline-flex items-center gap-1">
+                                  <User size={12} className="text-slate-400" /> {t.assignedUserName || "Staff"}
                                 </span>
                               </div>
                             </div>
@@ -911,8 +911,10 @@ function EnquiryDetailContent() {
                                 {f.type} Reminder
                                 {!f.completed && <span className="chip ml-2" style={{ background: "#FFFBEB", color: "#B45309", borderColor: "#FDE68A", fontSize: 11 }}>Scheduled</span>}
                               </p>
-                              <p className="text-xs mt-0.5" style={{ color: "var(--text-sub)" }}>
-                                📅 {f.date} at {f.time} · Assigned: {f.assignedUserName || "Counsellor"}
+                              <p className="text-xs mt-0.5 flex items-center gap-2" style={{ color: "var(--text-sub)" }}>
+                                <span className="inline-flex items-center gap-1"><Calendar size={12} className="text-slate-400" />{f.date} at {f.time}</span>
+                                <span>·</span>
+                                <span className="inline-flex items-center gap-1"><User size={12} className="text-slate-400" />{f.assignedUserName || "Counsellor"}</span>
                               </p>
                               {f.notes && <p className="text-xs mt-1 font-medium" style={{ color: "var(--text-body)" }}>{f.notes}</p>}
                             </div>
@@ -944,25 +946,30 @@ function EnquiryDetailContent() {
       {/* 1. Log Activity Modal */}
       {showLogModal && (
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowLogModal(false)}>
-          <div className="modal">
-            <div className="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border)]">
+          <div className="modal max-w-xl p-7 sm:p-8 shadow-2xl rounded-2xl">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200/80 mb-6">
               <div>
-                <h3 className="text-lg font-bold" style={{ color: "var(--text-h)", fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+                <h3 className="text-base font-bold text-slate-900 font-heading">
                   Log Candidate Interaction
                 </h3>
-                <p className="text-xs mt-0.5" style={{ color: "var(--text-sub)" }}>
-                  For student candidate <span className="font-bold text-[var(--text-h)]">{enquiry.studentName}</span>
+                <p className="text-xs text-slate-500 mt-1">
+                  Record communication with <span className="font-semibold text-slate-800">{enquiry.studentName}</span>
                 </p>
               </div>
-              <button onClick={() => setShowLogModal(false)} className="btn-secondary h-8 w-8 p-0 rounded-lg">
+              <button 
+                type="button" 
+                onClick={() => setShowLogModal(false)} 
+                className="modal-close-btn"
+                aria-label="Close"
+              >
                 <X size={16} />
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div>
-                <span className="form-label">Interaction Type <span className="text-red-500">*</span></span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mt-1.5">
+                <label className="form-label">Interaction Type <span className="text-rose-500 font-normal ml-0.5">*</span></label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {(["PHONE_CALL","WHATSAPP","EMAIL","MEETING","WALK_IN","NOTE"] as ActivityType[]).map(t => {
                     const isSelected = activityType === t;
                     return (
@@ -970,15 +977,10 @@ function EnquiryDetailContent() {
                         key={t}
                         type="button"
                         onClick={() => setActType(t)}
-                        className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer"
-                        style={{
-                          background: isSelected ? "var(--blue-50)" : "#FFFFFF",
-                          borderColor: isSelected ? "var(--blue-700)" : "var(--border)",
-                          color: isSelected ? "var(--blue-700)" : "var(--text-body)",
-                        }}
+                        className={`pill-btn py-3 px-3 text-xs justify-center gap-2 rounded-xl ${isSelected ? "active" : ""}`}
                       >
-                        <span style={{ color: ACTIVITY_COLORS[t] || "#1A56DB" }}>{ACTIVITY_ICONS[t]}</span>
-                        {activityTypeLabels[t] || t}
+                        <span className={isSelected ? "text-orange-600" : "text-slate-400"}>{ACTIVITY_ICONS[t]}</span>
+                        <span className="truncate font-medium">{activityTypeLabels[t] || t}</span>
                       </button>
                     );
                   })}
@@ -986,37 +988,37 @@ function EnquiryDetailContent() {
               </div>
 
               <div>
-                <span className="form-label">Outcome / Result <span className="text-red-500">*</span></span>
+                <label className="form-label">Outcome / Result <span className="text-rose-500 font-normal ml-0.5">*</span></label>
                 <input
                   value={outcome}
                   onChange={e => setOutcome(e.target.value)}
-                  className="input-field mt-1"
-                  placeholder="e.g., Connected - Very interested in Grade 1, Visited campus..."
+                  className="input-field"
+                  placeholder="e.g., Connected — Parent visited campus, interested in Grade 1"
                 />
               </div>
 
               <div>
-                <span className="form-label">Detailed Remarks & Next Steps</span>
+                <label className="form-label">Detailed Remarks & Next Steps</label>
                 <textarea
                   value={remarks}
                   onChange={e => setRemarks(e.target.value)}
-                  className="input-field mt-1"
-                  rows={3}
+                  className="input-field"
+                  rows={4}
                   placeholder="Specific notes on syllabus, transport queries, fee discussion..."
                 />
               </div>
 
-              <div className="flex gap-3 pt-3 border-t border-[var(--border)]">
-                <button type="button" onClick={() => setShowLogModal(false)} className="btn-secondary flex-1">
+              <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
+                <button type="button" onClick={() => setShowLogModal(false)} className="btn-secondary px-5">
                   Cancel
                 </button>
                 <button
                   type="button"
                   disabled={submittingAct || !outcome.trim()}
                   onClick={handleLogActivity}
-                  className="btn-primary flex-1"
+                  className="btn-primary px-6"
                 >
-                  <Send size={15} /> {submittingAct ? "Saving Record..." : "Save Interaction"}
+                  <Send size={15} /> {submittingAct ? "Saving..." : "Save Interaction"}
                 </button>
               </div>
             </div>

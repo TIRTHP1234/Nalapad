@@ -391,71 +391,76 @@ export default function SettingsPage() {
       {/* Modal: Add Staff Account */}
       {showAddModal && (
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowAddModal(false)}>
-          <div className="modal max-w-md">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+          <div className="modal max-w-xl p-7 sm:p-8 rounded-2xl shadow-2xl">
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-200/80">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Create Staff Account</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Provision login credentials and designate role</p>
+                <h3 className="text-base font-bold text-slate-900 font-heading">Create Staff Account</h3>
+                <p className="text-xs text-slate-500 mt-1">Provision login credentials and designate role</p>
               </div>
-              <button onClick={() => setShowAddModal(false)} className="btn-secondary h-8 w-8 p-0 rounded-lg">
-                <X size={15} />
+              <button 
+                type="button" 
+                onClick={() => setShowAddModal(false)} 
+                className="modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={16} />
               </button>
             </div>
 
             {formError && (
-              <div className="p-3 rounded-lg mb-4 bg-red-50 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-2">
-                <AlertCircle size={15} /> {formError}
+              <div className="p-3.5 rounded-xl mb-5 bg-red-50 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-2.5">
+                <AlertCircle size={16} className="flex-shrink-0" /> <span>{formError}</span>
               </div>
             )}
 
             {formSuccess && (
-              <div className="p-3 rounded-lg mb-4 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold flex items-center gap-2">
-                <CheckCircle2 size={15} /> {formSuccess}
+              <div className="p-3.5 rounded-xl mb-5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold flex items-center gap-2.5">
+                <CheckCircle2 size={16} className="flex-shrink-0" /> <span>{formSuccess}</span>
               </div>
             )}
 
-            <form onSubmit={handleCreateStaff} className="space-y-4">
+            <form onSubmit={handleCreateStaff} className="space-y-6">
               <div>
-                <span className="form-label">Full Name <span className="text-red-500">*</span></span>
+                <label className="form-label">Full Name <span className="text-red-500 font-normal ml-0.5">*</span></label>
                 <input
                   type="text"
                   required
                   value={newFullName}
                   onChange={(e) => setNewFullName(e.target.value)}
                   placeholder="e.g., Anjali Rao"
-                  className="input-field mt-1 text-xs"
+                  className="input-field"
                 />
               </div>
 
               <div>
-                <span className="form-label">Staff Email <span className="text-red-500">*</span></span>
+                <label className="form-label">Staff Email <span className="text-red-500 font-normal ml-0.5">*</span></label>
                 <input
                   type="email"
                   required
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   placeholder="anjali.rao@nalapad.edu"
-                  className="input-field mt-1 text-xs"
+                  className="input-field"
                 />
               </div>
 
               <div>
-                <span className="form-label">Initial Password <span className="text-red-500">*</span></span>
+                <label className="form-label">Initial Password <span className="text-red-500 font-normal ml-0.5">*</span></label>
                 <input
                   type="text"
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="input-field mt-1 text-xs font-mono"
+                  className="input-field font-mono"
                 />
               </div>
 
               <div>
-                <span className="form-label">Assign System Role <span className="text-red-500">*</span></span>
+                <label className="form-label">Assign System Role <span className="text-red-500 font-normal ml-0.5">*</span></label>
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value)}
-                  className="input-field mt-1 text-xs"
+                  className="input-field"
                 >
                   <option value="ADMISSION_COUNSELLOR">Admission Counsellor</option>
                   <option value="PRINCIPAL">Principal / Director</option>
@@ -463,20 +468,20 @@ export default function SettingsPage() {
                 </select>
               </div>
 
-              <div className="flex gap-2.5 pt-3 border-t border-slate-200">
+              <div className="flex items-center justify-end gap-3 pt-5 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="btn-secondary flex-1 text-xs"
+                  className="btn-secondary px-5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingStaff}
-                  className="btn-primary flex-1 text-xs"
+                  className="btn-primary px-6"
                 >
-                  {savingStaff ? <Loader2 size={14} className="animate-spin" /> : "Create Account"}
+                  {savingStaff ? <Loader2 size={15} className="animate-spin" /> : "Create Account"}
                 </button>
               </div>
             </form>

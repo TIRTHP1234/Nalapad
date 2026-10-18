@@ -90,30 +90,31 @@ export default function DocumentUploadModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-[var(--border)]">
+    <div className="modal-overlay">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 animate-slide-up">
         {/* Header */}
-        <div className="px-6 py-4.5 bg-[#F8FAFD] border-b border-[var(--border)] flex items-center justify-between">
+        <div className="px-7 py-5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-base text-[var(--text-h)]">Upload Document</h3>
-            <p className="text-xs text-[var(--text-sub)] mt-0.5">
+            <h3 className="font-bold text-base text-slate-900 font-heading">Upload Document</h3>
+            <p className="text-xs text-slate-500 mt-1">
               {documentName} {studentName && `· ${studentName}`}
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="modal-close-btn"
+            aria-label="Close"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-7 sm:p-8 space-y-6">
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
-              <AlertCircle size={15} className="flex-shrink-0" />
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5">
+              <AlertCircle size={16} className="flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -127,7 +128,7 @@ export default function DocumentUploadModal({
             onDragLeave={() => setDragOver(false)}
             onDrop={handleFileDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-2xl p-7 text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+            className={`border-2 border-dashed rounded-2xl p-8 sm:p-10 text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
               dragOver
                 ? "border-[var(--blue-700)] bg-[var(--blue-50)]"
                 : file
@@ -145,58 +146,58 @@ export default function DocumentUploadModal({
 
             {file ? (
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2">
+                <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-2.5 shadow-xs">
                   <CheckCircle2 size={24} />
                 </div>
-                <p className="text-xs font-bold text-slate-900 max-w-[260px] truncate">{file.name}</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="text-xs font-bold text-slate-900 max-w-[280px] truncate">{file.name}</p>
+                <p className="text-[11px] text-slate-500 mt-1">
                   {(file.size / 1024).toFixed(1)} KB · Click or drag to replace
                 </p>
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-[var(--blue-700)] flex items-center justify-center mb-2">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 text-[var(--blue-700)] flex items-center justify-center mb-2.5 shadow-xs">
                   <Upload size={22} />
                 </div>
-                <p className="text-xs font-bold text-[var(--text-h)]">
+                <p className="text-sm font-bold text-[var(--text-h)]">
                   Click to browse or drag file here
                 </p>
-                <p className="text-[11px] text-[var(--text-sub)] mt-1">
+                <p className="text-xs text-[var(--text-sub)] mt-1">
                   Supports PDF, PNG, JPG up to 10MB
                 </p>
               </div>
             )}
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-600 space-y-1 select-none">
-            <span className="font-semibold text-slate-800 block">Admissions Compliance Note:</span>
-            <p className="text-[11px] leading-relaxed">
+          <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 text-xs text-slate-600 space-y-1.5 select-none">
+            <span className="font-semibold text-slate-800 block text-xs">Admissions Compliance Note:</span>
+            <p className="text-xs leading-relaxed text-slate-500">
               Uploaded certificates are stored securely in Nalapad Supabase Storage and logged with an audit trail for verification.
             </p>
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
               disabled={uploading}
-              className="btn-secondary text-xs"
+              className="btn-secondary px-5"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={uploading || !file}
-              className="btn-primary text-xs"
+              className="btn-primary px-6"
             >
               {uploading ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" /> Uploading to Supabase...
+                  <Loader2 size={15} className="animate-spin" /> Uploading to Supabase...
                 </>
               ) : (
                 <>
-                  <Upload size={14} /> Upload & Submit
+                  <Upload size={15} /> Upload & Submit
                 </>
               )}
             </button>

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Topbar from "@/components/Topbar";
-import { Building2, Plus, CheckCircle2, Clock, Users, Loader2, Calendar, FileText } from "lucide-react";
+import { Building2, Plus, CheckCircle2, Clock, Users, Loader2, Calendar, FileText, X } from "lucide-react";
 import { formatDateTime, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import ScheduleWalkInModal from "@/components/ScheduleWalkInModal";
@@ -267,24 +267,29 @@ export default function WalkInsPage() {
 
       {/* Record Outcome Modal */}
       {outcomeTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-[#D8E0EB]">
-            <div className="px-6 py-4 bg-[#F8FAFD] border-b border-[#D8E0EB] flex items-center justify-between">
+        <div className="modal-overlay">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 animate-slide-up">
+            <div className="px-7 py-5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-base text-[#0D1B2E]">Record Visit Outcome</h3>
-                <p className="text-xs text-slate-500">{outcomeTarget.visitor_name}</p>
+                <h3 className="font-bold text-base text-slate-900 font-heading">Record Visit Outcome</h3>
+                <p className="text-xs text-slate-500 mt-1">{outcomeTarget.visitor_name}</p>
               </div>
-              <button onClick={() => setOutcomeTarget(null)} className="text-slate-400 hover:text-slate-700">
-                ✕
+              <button 
+                type="button"
+                onClick={() => setOutcomeTarget(null)} 
+                className="modal-close-btn"
+                aria-label="Close"
+              >
+                <X size={16} />
               </button>
             </div>
-            <form onSubmit={handleSaveOutcome} className="p-6 space-y-4">
+            <form onSubmit={handleSaveOutcome} className="p-7 sm:p-8 space-y-6">
               <div>
-                <span className="form-label">Family Decision / Outcome</span>
+                <label className="form-label">Family Decision / Outcome</label>
                 <select
                   value={outcomeVal}
                   onChange={(e) => setOutcomeVal(e.target.value)}
-                  className="input-field text-xs"
+                  className="input-field"
                 >
                   <option value="INTERESTED">Interested in Admission</option>
                   <option value="REGISTRATION">Proceeding to Registration Fee</option>
@@ -294,33 +299,40 @@ export default function WalkInsPage() {
               </div>
 
               <div>
-                <span className="form-label">Tour Feedback & Observations</span>
+                <label className="form-label">Tour Feedback & Observations</label>
                 <textarea
                   value={outcomeRemarks}
                   onChange={(e) => setOutcomeRemarks(e.target.value)}
                   placeholder="e.g. Liked IB curriculum and football academy. Requested fee breakdown."
-                  rows={3}
-                  className="input-field text-xs resize-none"
+                  rows={4}
+                  className="input-field resize-none"
                   style={{ height: "auto" }}
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex justify-end gap-3 pt-5 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setOutcomeTarget(null)}
                   disabled={savingOutcome}
-                  className="btn-secondary text-xs py-2 px-4"
+                  className="btn-secondary px-5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingOutcome}
-                  className="btn-primary text-xs py-2 px-5 flex items-center gap-1.5"
+                  className="btn-primary px-6"
                 >
-                  {savingOutcome ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={14} />}
-                  Complete Visit
+                  {savingOutcome ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Saving...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={15} /> Save Outcome
+                    </>
+                  )}
                 </button>
               </div>
             </form>
